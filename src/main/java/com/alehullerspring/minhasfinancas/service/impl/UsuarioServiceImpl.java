@@ -1,6 +1,7 @@
 package com.alehullerspring.minhasfinancas.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alehullerspring.minhasfinancas.exception.RegraNegocioException;
 import com.alehullerspring.minhasfinancas.model.entity.Usuario;
@@ -24,9 +25,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
+	@Transactional
 	public Usuario salvarUsuario(Usuario usuario) {
-		// TODO Auto-generated method stub
-		return null;
+		validarEmail(usuario.getEmail());
+		return repository.save(usuario);
 	}
 
 	@Override
