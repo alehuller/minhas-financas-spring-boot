@@ -2,6 +2,9 @@ package com.alehullerspring.minhasfinancas.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Optional;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +34,19 @@ public class UsuarioServiceTest {
 	@BeforeEach
 	public void setUp() {
 		service = new UsuarioServiceImpl(repository);
+	}
+	
+	@Test
+	public void deveAutenticarUmUsuarioComSucesso() {
+		String email = "email@email.com";
+		String senha = "senha";
+		
+		Usuario usuario = Usuario.builder().email(email).senha(senha).id(1l).build();
+		Mockito.when(repository.findByEmail(email)).thenReturn(Optional.of(usuario));
+		
+		Usuario result = service.autenticar(email, senha);
+		
+		Assertions.assertThat(result).isNotNull();
 	}
 	
 	@Test
