@@ -3,6 +3,7 @@ package com.alehullerspring.minhasfinancas.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alehullerspring.minhasfinancas.model.entity.Lancamento;
 import com.alehullerspring.minhasfinancas.model.enums.StatusLancamento;
@@ -19,9 +20,9 @@ public class LancamentoServiceImpl implements LancamentoService{
 	}
 
 	@Override
+	@Transactional
 	public Lancamento salvar(Lancamento lancamento) {
-		// TODO Auto-generated method stub
-		return null;
+		return repository.save(lancamento);
 	}
 
 	@Override
