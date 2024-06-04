@@ -52,6 +52,19 @@ public class UsuarioServiceTest {
 	}
 	
 	@Test
+	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado() {
+		String email = "email@email.com";
+		Usuario usuario = Usuario.builder().email("email@email.com").build();
+		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(email);
+		
+		assertThrows(RegraNegocioException.class, () -> {
+			service.salvarUsuario(usuario);
+		});
+		
+		Mockito.verify(repository, Mockito.never()).save(usuario);
+	}
+	
+	@Test
 	public void deveAutenticarUmUsuarioComSucesso() {
 		String email = "email@email.com";
 		String senha = "senha";
