@@ -1,6 +1,7 @@
 package com.alehullerspring.minhasfinancas.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +27,17 @@ public class LancamentoServiceImpl implements LancamentoService{
 	}
 
 	@Override
+	@Transactional
 	public Lancamento atualizar(Lancamento lancamento) {
-		// TODO Auto-generated method stub
-		return null;
+		Objects.requireNonNull(lancamento.getId());
+		return repository.save(lancamento);
 	}
 
 	@Override
+	@Transactional
 	public void deletar(Lancamento lancamento) {
-		// TODO Auto-generated method stub
-		
+		Objects.requireNonNull(lancamento.getId());
+		repository.delete(lancamento);
 	}
 
 	@Override
@@ -45,8 +48,8 @@ public class LancamentoServiceImpl implements LancamentoService{
 
 	@Override
 	public void atualizarStatus(Lancamento lancamento, StatusLancamento status) {
-		// TODO Auto-generated method stub
-		
+		lancamento.setStatus(status);
+		atualizar(lancamento);
 	}
 
 }
