@@ -24,16 +24,15 @@ import com.alehullerspring.minhasfinancas.model.enums.TipoLancamento;
 import com.alehullerspring.minhasfinancas.service.LancamentoService;
 import com.alehullerspring.minhasfinancas.service.UsuarioService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/lancamentos")
+@RequiredArgsConstructor
 public class LancamentoResource {
 
-	private LancamentoService service;
-	private UsuarioService usuarioService;
-
-	public LancamentoResource(LancamentoService service) {
-		this.service = service;
-	}
+	private final LancamentoService service;
+	private final UsuarioService usuarioService;
 	
 	@GetMapping
 	public ResponseEntity buscar(@RequestParam(value = "descricao", required = false) String descricao, @RequestParam(value = "mes", required = false) Integer mes, @RequestParam(value = "ano", required = false) Integer ano, @RequestParam("usuario") Long idUsuario) {
