@@ -42,7 +42,7 @@ public class LancamentoResource {
 		lancamentoFiltro.setAno(ano);
 		
 		Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
-		if(usuario.isPresent()) {
+		if(!usuario.isPresent()) {
 			return ResponseEntity.badRequest().body("Nao foi possivel realizar a consulta. Usuario nao encontrado para o parametro informado.");
 		}
 		else {
@@ -97,8 +97,14 @@ public class LancamentoResource {
 		Usuario usuario = usuarioService.obterPorId(dto.getUsuario()).orElseThrow( () -> new RegraNegocioException("Usuario nao encontrado para o Id informado"));
 		
 		lancamento.setUsuario(usuario);
-		lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
-		lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+		
+		if(dto.getTipo() != null) {
+			lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
+		}
+		
+		if(dto.getStatus() != null) {
+			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+		}
 		
 		return lancamento;
 	}
