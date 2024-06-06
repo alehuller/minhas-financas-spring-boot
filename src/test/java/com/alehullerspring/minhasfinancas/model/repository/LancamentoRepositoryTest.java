@@ -2,8 +2,9 @@ package com.alehullerspring.minhasfinancas.model.repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,23 +36,54 @@ public class LancamentoRepositoryTest {
 		Lancamento lancamento = criarLancamento();
 		lancamento = repository.save(lancamento);
 		
-		Assertions.assertThat(lancamento.getId()).isNotNull();
+		assertThat(lancamento.getId()).isNotNull();
 	}
 
 	@Test
 	public void deveDeletarUmLancamento() {
-		Lancamento lancamento = criarLancamento();
-		entityManager.persist(lancamento);
+		Lancamento lancamento = criarEPersistirLancamento();
+		
 		lancamento = entityManager.find(Lancamento.class, lancamento.getId());
 		
 		repository.delete(lancamento);
 		
 		Lancamento lancamentoInexistente = entityManager.find(Lancamento.class, lancamento.getId());
 		
-		Assertions.assertThat(lancamentoInexistente).isNull();
+		assertThat(lancamentoInexistente).isNull();
+	}
+
+	@Test
+	public void deveAtualizarUmLancamento() {
+		Lancamento lancamento = criarEPersistirLancamento();
+		
+		lancamento.setAno(2018);
+		lancamento.setDescricao("Teste Atualizar");
+		lancamento.setStatus(StatusLancamento.CANCELADO);
+		repository.save(lancamento);
+		
+		Lancamento lancamentoAtualizado = entityManager.find(Lancamento.class, lancamento.getId());
+		
+		assertThat(lancamentoAtualizado.getAno()).isEqualTo(2018);
+		assertThat(lancamentoAtualizado.getDescricao()).isEqualTo("Teste Atualizar");
+		assertThat(lancamentoAtualizado.getStatus()).isEqualTo(StatusLancamento.CANCELADO);
+	}
+	
+	@Test
+	public void deveBuscarUmLancamentoPorId() {
+		Lancamento lancamento = criarEPersistirLancamento();
+		
+		Optional<Lancamento> lancamentoEncontrado = repository.findById(lancamento.getId());
+		
+		assertThat(lancamentoEncontrado.isPresent()).isTrue();
 	}
 	
 	private Lancamento criarLancamento() {
 		return Lancamento.builder().ano(2019).mes(1).descricao("lancamento qualquer").valor(BigDecimal.valueOf(10)).tipo(TipoLancamento.RECEITA).status(StatusLancamento.PENDENTE).dataCadastro(LocalDate.now()).build();
+	}
+	
+	private Lancamento criarEPersistirLancamento() {
+		Lancamento lancamento = criarLancamento();
+		entityManager.persist(lancamento);
+		return lancamento;
 	}
 }
